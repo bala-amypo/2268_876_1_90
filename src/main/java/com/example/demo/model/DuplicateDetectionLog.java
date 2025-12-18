@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "duplicate_detection_log")
+// @Table(name = "duplicate_detection_log")
 public class DuplicateDetectionLog {
 
     @Id
