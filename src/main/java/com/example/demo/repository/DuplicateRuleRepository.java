@@ -7,6 +7,6 @@ import java.util.Optional;
 
 
 public interface DuplicateRuleRepository extends JpaRepository<DuplicateRuleRepository, Long> {
-  @Repository
+
     Optional<DuplicateRuleRepository> findByRuleName(String ruleName);
 }

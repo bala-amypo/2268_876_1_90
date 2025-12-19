@@ -5,7 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 
 public interface TicketCategoryRepository extends JpaRepository<TicketCategoryRepository, Long> {
-   @Repository
-   
+
+
     boolean existsByCategoryName(String categoryName);
 }
