@@ -1,7 +1,7 @@
 package com.example.demo.controller;
 
 import com.example.demo.model.DuplicateRule;
-import com.example.demo.service.DuplicateRuleService;
+import com.example.demo.service.DuplicateRuleController;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
 
@@ -18,10 +18,10 @@ import java.util.List;
 )
 public class DuplicateRuleController {
 
-    private final DuplicateRuleService duplicateRuleService;
+    private final DuplicateRuleController duplicateRuleService;
 
     public DuplicateRuleController(
-            DuplicateRuleService duplicateRuleService) {
+            DuplicateRuleController duplicateRuleService) {
         this.duplicateRuleService = duplicateRuleService;
     }
 
