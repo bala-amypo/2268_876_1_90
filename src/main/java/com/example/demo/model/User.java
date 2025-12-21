@@ -3,20 +3,20 @@ import jakarta.persistence.*;
 import java.time.LocalDateTime; 
 import java.util.List; 
 @Entity 
-  @Table(name = "users") 
+@Table(name = "users") 
 public class User { 
 @Id 
 @GeneratedValue(strategy = GenerationType.IDENTITY) 
-  private Long id; 
-  private String fullName; 
+private Long id; 
+private String fullName; 
 @Column(unique = true) 
-   private String email; 
-   private String password; 
-  private String role; 
-  private LocalDateTime createdAt; 
+private String email; 
+private String password; 
+private String role; 
+private LocalDateTime createdAt; 
 @OneToMany(mappedBy = "user") 
-  private List<Ticket> tickets; 
-  public User() { 
+private List<Ticket> tickets; 
+public User() { 
 } 
 public User(String fullName, String email, String password, String 
 role) { 
@@ -67,3 +67,4 @@ return tickets;
 public void setTickets(List<Ticket> tickets) { 
 this.tickets = tickets; 
 } 
+}
