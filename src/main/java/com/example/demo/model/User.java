@@ -9,14 +9,14 @@ public class User {
 @GeneratedValue(strategy = GenerationType.IDENTITY) 
   private Long id; 
   private String fullName; 
- @Column(unique = true) 
+@Column(unique = true) 
    private String email; 
    private String password; 
-private String role; 
-private LocalDateTime createdAt; 
+  private String role; 
+  private LocalDateTime createdAt; 
 @OneToMany(mappedBy = "user") 
-private List<Ticket> tickets; 
-public User() { 
+  private List<Ticket> tickets; 
+  public User() { 
 } 
 public User(String fullName, String email, String password, String 
 role) { 
