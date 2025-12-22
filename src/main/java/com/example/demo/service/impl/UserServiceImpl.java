@@ -1,5 +1,6 @@
 package com.example.demo.service.impl;
 
+import com.example.demo.exception.BadRequestException;
 import com.example.demo.exception.NotFoundException;
 import com.example.demo.model.User;
 import com.example.demo.repository.UserRepository;
@@ -15,8 +16,7 @@ public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
 
-    public UserServiceImpl(
-            UserRepository userRepository) {
+    public UserServiceImpl(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
 
@@ -24,14 +24,11 @@ public class UserServiceImpl implements UserService {
     public User registerUser(User user) {
 
         if (userRepository.existsByEmail(user.getEmail())) {
-            throw new IllegalArgumentException(
-                    "Email already exists"
-            );
+            throw new BadRequestException("Email already exists");
         }
 
-        if (user.getPassword() == null
-                || user.getPassword().length() < 8) {
-            throw new IllegalArgumentException(
+        if (user.getPassword() == null || user.getPassword().length() < 8) {
+            throw new BadRequestException(
                     "Password must be at least 8 characters"
             );
         }
