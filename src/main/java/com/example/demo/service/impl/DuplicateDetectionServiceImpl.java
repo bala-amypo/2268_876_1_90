@@ -1,51 +1,42 @@
+package com.example.demo.service.impl;
+
+import com.example.demo.model.DuplicateDetectionLog;
+import com.example.demo.model.DuplicateRule;
+import com.example.demo.model.Ticket;
+import com.example.demo.repository.DuplicateDetectionLogRepository;
+import com.example.demo.repository.DuplicateRuleRepository;
+import com.example.demo.repository.TicketRepository;
+import com.example.demo.util.TextSimilarityUtil;
+import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
+
 @Service
-public class DuplicateDetectionServiceImpl implements DuplicateDetectionService {
+public class DuplicateDetectionServiceImpl {
 
-    private final TicketRepository ticketRepo;
-    private final DuplicateRuleRepository ruleRepo;
-    private final DuplicateDetectionLogRepository logRepo;
+    private final TicketRepository ticketRepository;
+    private final DuplicateRuleRepository ruleRepository;
+    private final DuplicateDetectionLogRepository logRepository;
 
-    public DuplicateDetectionServiceImpl(
-            TicketRepository t,
-            DuplicateRuleRepository r,
-            DuplicateDetectionLogRepository l) {
-        this.ticketRepo = t;
-        this.ruleRepo = r;
-        this.logRepo = l;
+    public DuplicateDetectionServiceImpl(TicketRepository ticketRepository,
+                                        DuplicateRuleRepository ruleRepository,
+                                        DuplicateDetectionLogRepository logRepository) {
+        this.ticketRepository = ticketRepository;
+        this.ruleRepository = ruleRepository;
+        this.logRepository = logRepository;
     }
 
     public List<DuplicateDetectionLog> detectDuplicates(Long ticketId) {
-        Ticket base = ticketRepo.findById(ticketId).orElseThrow();
-        List<DuplicateDetectionLog> logs = new ArrayList<>();
+        Ticket baseTicket = ticketRepository.findById(ticketId)
+                .orElseThrow(() -> new RuntimeException("ticket not found"));
 
-        for (DuplicateRule rule : ruleRepo.findAll()) {
-            for (Ticket other : ticketRepo.findAll()) {
-                if (other.getId().equals(base.getId())) continue;
+        List<DuplicateDetectionLog> logs = new ArrayList<>();
+        List<DuplicateRule> rules = ruleRepository.findAll();
+        List<Ticket> openTickets = ticketRepository.findByStatus("OPEN");
+
+        for (DuplicateRule rule : rules) {
+            for (Ticket candidate : openTickets) {
+                if (candidate.getId().equals(baseTicket.getId())) continue;
 
                 double score = 0.0;
-                if ("EXACT_MATCH".equals(rule.getMatchType())) {
-                    score = base.getDescription()
-                            .equalsIgnoreCase(other.getDescription()) ? 1.0 : 0.0;
-                } else if ("SIMILARITY".equals(rule.getMatchType())) {
-                    score = TextSimilarityUtil.similarity(
-                            base.getDescription(), other.getDescription());
-                }
-
-                if (score >= rule.getThreshold()) {
-                    DuplicateDetectionLog log = new DuplicateDetectionLog();
-                    log.setTicket(base);
-                    log.setDuplicateTicket(other);
-                    log.setMatchScore(score);
-                    logs.add(logRepo.save(log));
-                }
-            }
-        }
-        return logs;
-    }
-
-    public List<DuplicateDetectionLog> getLogsForTicket(Long ticketId) {
-        return logRepo.findAll().stream()
-                .filter(l -> l.getTicket().getId().equals(ticketId))
-                .toList();
-    }
-}
