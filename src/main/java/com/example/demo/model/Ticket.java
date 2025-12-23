@@ -1,7 +1,6 @@
 package com.example.demo.model;
 
 import jakarta.persistence.*;
-import java.time.LocalDateTime;
 
 @Entity
 public class Ticket {
@@ -10,37 +9,46 @@ public class Ticket {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String subject;
+    private Long userId;
+    private Long categoryId;
+    private String title;
     private String description;
-    private String status = "OPEN";
-    private LocalDateTime createdAt = LocalDateTime.now();
 
-    @ManyToOne
-    private User user;
+    // ✅ REQUIRED getters & setters
 
-    @ManyToOne
-    private TicketCategory category;
+    public Long getId() {
+        return id;
+    }
 
-    public Ticket() {}
+    public Long getUserId() {
+        return userId;
+    }
 
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
+    public void setUserId(Long userId) {
+        this.userId = userId;
+    }
 
-    public String getSubject() { return subject; }
-    public void setSubject(String subject) { this.subject = subject; }
+    public Long getCategoryId() {
+        return categoryId;
+    }
 
-    public String getDescription() { return description; }
-    public void setDescription(String description) { this.description = description; }
+    public void setCategoryId(Long categoryId) {
+        this.categoryId = categoryId;
+    }
 
-    public String getStatus() { return status; }
-    public void setStatus(String status) { this.status = status; }
+    public String getTitle() {
+        return title;
+    }
 
-    public LocalDateTime getCreatedAt() { return createdAt; }
-    public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
+    public void setTitle(String title) {
+        this.title = title;
+    }
 
-    public User getUser() { return user; }
-    public void setUser(User user) { this.user = user; }
+    public String getDescription() {
+        return description;
+    }
 
-    public TicketCategory getCategory() { return category; }
-    public void setCategory(TicketCategory category) { this.category = category; }
+    public void setDescription(String description) {
+        this.description = description;
+    }
 }
