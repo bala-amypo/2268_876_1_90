@@ -2,13 +2,14 @@ package com.example.demo.service.impl;
 
 import com.example.demo.model.DuplicateRule;
 import com.example.demo.repository.DuplicateRuleRepository;
+import com.example.demo.service.DuplicateRuleService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 
 @Service
-public class DuplicateRuleServiceImpl {
+public class DuplicateRuleServiceImpl implements DuplicateRuleService {
 
     private final DuplicateRuleRepository ruleRepository;
 
@@ -16,6 +17,7 @@ public class DuplicateRuleServiceImpl {
         this.ruleRepository = ruleRepository;
     }
 
+    @Override
     public DuplicateRule createRule(DuplicateRule rule) {
         Optional<DuplicateRule> existing = ruleRepository.findByRuleName(rule.getRuleName());
         if (existing.isPresent()) {
@@ -29,10 +31,12 @@ public class DuplicateRuleServiceImpl {
         return ruleRepository.save(rule);
     }
 
+    @Override
     public List<DuplicateRule> getAllRules() {
         return ruleRepository.findAll();
     }
 
+    @Override
     public DuplicateRule getRule(Long id) {
         return ruleRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Rule not found"));

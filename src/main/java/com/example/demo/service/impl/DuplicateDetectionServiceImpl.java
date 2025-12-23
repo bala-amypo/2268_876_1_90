@@ -6,6 +6,7 @@ import com.example.demo.model.Ticket;
 import com.example.demo.repository.DuplicateDetectionLogRepository;
 import com.example.demo.repository.DuplicateRuleRepository;
 import com.example.demo.repository.TicketRepository;
+import com.example.demo.service.DuplicateDetectionService;
 import com.example.demo.util.TextSimilarityUtil;
 import org.springframework.stereotype.Service;
 
@@ -13,20 +14,21 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
-public class DuplicateDetectionServiceImpl {
+public class DuplicateDetectionServiceImpl implements DuplicateDetectionService {
 
     private final TicketRepository ticketRepository;
     private final DuplicateRuleRepository ruleRepository;
     private final DuplicateDetectionLogRepository logRepository;
 
     public DuplicateDetectionServiceImpl(TicketRepository ticketRepository,
-                                        DuplicateRuleRepository ruleRepository,
-                                        DuplicateDetectionLogRepository logRepository) {
+                                         DuplicateRuleRepository ruleRepository,
+                                         DuplicateDetectionLogRepository logRepository) {
         this.ticketRepository = ticketRepository;
         this.ruleRepository = ruleRepository;
         this.logRepository = logRepository;
     }
 
+    @Override
     public List<DuplicateDetectionLog> detectDuplicates(Long ticketId) {
         Ticket baseTicket = ticketRepository.findById(ticketId)
                 .orElseThrow(() -> new RuntimeException("ticket not found"));
@@ -74,10 +76,12 @@ public class DuplicateDetectionServiceImpl {
         return logs;
     }
 
+    @Override
     public List<DuplicateDetectionLog> getLogsForTicket(Long ticketId) {
         return logRepository.findByTicket_Id(ticketId);
     }
 
+    @Override
     public DuplicateDetectionLog getLog(Long id) {
         return logRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Log not found"));
