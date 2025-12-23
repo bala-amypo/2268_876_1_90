@@ -28,7 +28,7 @@ public class User {
 
     public User() {}
 
-    // getters and setters
+    // Getters & Setters
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 
@@ -42,9 +42,11 @@ public class User {
     public void setPassword(String password) { this.password = password; }
 
     public String getRole() { return role; }
-    public void setRole(String role) {
-        this.role = (role == null || role.isBlank()) ? "USER" : role;
-    }
+    public void setRole(String role) { this.role = (role == null) ? "USER" : role; }
 
     public LocalDateTime getCreatedAt() { return createdAt; }
+    public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
+
+    public List<Ticket> getTickets() { return tickets; }
+    public void setTickets(List<Ticket> tickets) { this.tickets = tickets; }
 }

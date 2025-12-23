@@ -1,6 +1,7 @@
 package com.example.demo.model;
 
 import jakarta.persistence.*;
+import java.time.LocalDateTime;
 
 @Entity
 public class DuplicateRule {
@@ -12,6 +13,7 @@ public class DuplicateRule {
     private String ruleName;
     private String matchType;
     private double threshold;
+    private LocalDateTime createdAt = LocalDateTime.now();
 
     public DuplicateRule() {}
 
@@ -26,8 +28,10 @@ public class DuplicateRule {
 
     public double getThreshold() { return threshold; }
     public void setThreshold(double threshold) {
-        if (threshold < 0 || threshold > 1)
-            throw new IllegalArgumentException("threshold");
+        if (threshold < 0.0 || threshold > 1.0) throw new IllegalArgumentException("threshold");
         this.threshold = threshold;
     }
+
+    public LocalDateTime getCreatedAt() { return createdAt; }
+    public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
 }

@@ -14,23 +14,25 @@ public class DuplicateDetectionLog {
     private Ticket ticket;
 
     @ManyToOne
-    private Ticket duplicateTicket;
+    private Ticket matchedTicket; // <-- matches service call
 
     private double matchScore;
     private LocalDateTime detectedAt = LocalDateTime.now();
 
     public DuplicateDetectionLog() {}
 
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
+
     public Ticket getTicket() { return ticket; }
     public void setTicket(Ticket ticket) { this.ticket = ticket; }
 
-    public Ticket getDuplicateTicket() { return duplicateTicket; }
-    public void setDuplicateTicket(Ticket duplicateTicket) {
-        this.duplicateTicket = duplicateTicket;
-    }
+    public Ticket getMatchedTicket() { return matchedTicket; }
+    public void setMatchedTicket(Ticket matchedTicket) { this.matchedTicket = matchedTicket; }
 
     public double getMatchScore() { return matchScore; }
     public void setMatchScore(double matchScore) { this.matchScore = matchScore; }
 
     public LocalDateTime getDetectedAt() { return detectedAt; }
+    public void setDetectedAt(LocalDateTime detectedAt) { this.detectedAt = detectedAt; }
 }
