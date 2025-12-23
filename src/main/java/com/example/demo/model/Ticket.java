@@ -9,25 +9,28 @@ public class Ticket {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private Long userId;
-    private Long categoryId;
+    // ✅ REQUIRED for User ↔ Ticket mapping
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
 
-    private String subject;     // ✅ REQUIRED
+    private Long categoryId;
+    private String subject;
     private String description;
     private String status;
 
-    // -------- Getters & Setters --------
+    // ---------- getters & setters ----------
 
     public Long getId() {
         return id;
     }
 
-    public Long getUserId() {
-        return userId;
+    public User getUser() {          // ✅ REQUIRED
+        return user;
     }
 
-    public void setUserId(Long userId) {
-        this.userId = userId;
+    public void setUser(User user) { // ✅ REQUIRED
+        this.user = user;
     }
 
     public Long getCategoryId() {
@@ -38,7 +41,7 @@ public class Ticket {
         this.categoryId = categoryId;
     }
 
-    public String getSubject() {     // ✅ REQUIRED
+    public String getSubject() {
         return subject;
     }
 
