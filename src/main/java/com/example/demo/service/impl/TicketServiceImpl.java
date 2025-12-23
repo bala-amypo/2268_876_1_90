@@ -1,37 +1,70 @@
+package com.example.demo.service.impl;
+
+import com.example.demo.model.Ticket;
+import com.example.demo.model.User;
+import com.example.demo.model.TicketCategory;
+import com.example.demo.repository.TicketRepository;
+import com.example.demo.repository.UserRepository;
+import com.example.demo.repository.TicketCategoryRepository;
+import com.example.demo.exception.NotFoundException;
+import org.springframework.stereotype.Service;
+
+import java.time.LocalDateTime;
+import java.util.List;
+
 @Service
-public class TicketServiceImpl implements TicketService {
+public class TicketServiceImpl {
 
-    private final TicketRepository ticketRepo;
-    private final UserRepository userRepo;
-    private final TicketCategoryRepository categoryRepo;
+    private final TicketRepository ticketRepository;
+    private final UserRepository userRepository;
+    private final TicketCategoryRepository categoryRepository;
 
-    public TicketServiceImpl(TicketRepository t, UserRepository u, TicketCategoryRepository c) {
-        this.ticketRepo = t;
-        this.userRepo = u;
-        this.categoryRepo = c;
+    public TicketServiceImpl(TicketRepository ticketRepository,
+                             UserRepository userRepository,
+                             TicketCategoryRepository categoryRepository) {
+        this.ticketRepository = ticketRepository;
+        this.userRepository = userRepository;
+        this.categoryRepository = categoryRepository;
     }
 
     public Ticket createTicket(Long userId, Long categoryId, Ticket ticket) {
-        if (ticket.getDescription().length() < 10)
-            throw new RuntimeException("description");
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new NotFoundException("User not found"));
+        TicketCategory category = categoryRepository.findById(categoryId)
+                .orElseThrow(() -> new NotFoundException("Category not found"));
 
-        ticket.setUser(userRepo.findById(userId).orElseThrow());
-        ticket.setCategory(categoryRepo.findById(categoryId).orElseThrow());
-        return ticketRepo.save(ticket);
+        if (ticket.getSubject() == null || ticket.getSubject().isBlank()) {
+            throw new IllegalArgumentException("Subject must not be blank");
+        }
+
+        if (ticket.getDescription() == null || ticket.getDescription().length() < 10) {
+            throw new IllegalArgumentException("Description must be at least 10 characters");
+        }
+
+        ticket.setUser(user);
+        ticket.setCategory(category);
+
+        if (ticket.getStatus() == null) {
+            ticket.setStatus("OPEN");
+        }
+
+        if (ticket.getCreatedAt() == null) {
+            ticket.setCreatedAt(LocalDateTime.now());
+        }
+
+        return ticketRepository.save(ticket);
     }
 
     public Ticket getTicket(Long id) {
-        return ticketRepo.findById(id)
-                .orElseThrow(() -> new RuntimeException("ticket not found"));
-    }
-
-    public List<Ticket> getAllTickets() {
-        return ticketRepo.findAll();
+        return ticketRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("ticket not found"));
     }
 
     public List<Ticket> getTicketsByUser(Long userId) {
-        return ticketRepo.findAll().stream()
-                .filter(t -> t.getUser().getId().equals(userId))
-                .toList();
+        return ticketRepository.findByUser_Id(userId);
+    }
+
+    public List<Ticket> getAllTickets() {
+        return ticketRepository.findAll();
     }
 }

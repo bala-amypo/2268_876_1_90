@@ -1,28 +1,33 @@
+package com.example.demo.service.impl;
+
+import com.example.demo.model.User;
+import com.example.demo.repository.UserRepository;
+import com.example.demo.exception.NotFoundException;
+import org.springframework.stereotype.Service;
+
+import java.time.LocalDateTime;
+import java.util.List;
+
 @Service
-public class UserServiceImpl implements UserService {
+public class UserServiceImpl {
 
-    private final UserRepository repo;
+    private final UserRepository userRepository;
 
-    public UserServiceImpl(UserRepository repo) {
-        this.repo = repo;
+    public UserServiceImpl(UserRepository userRepository) {
+        this.userRepository = userRepository;
     }
 
     public User registerUser(User user) {
-        if (repo.findByEmail(user.getEmail()).isPresent())
-            throw new RuntimeException("email exists");
+        if (userRepository.existsByEmail(user.getEmail())) {
+            throw new IllegalArgumentException("Email already exists");
+        }
 
-        if (user.getPassword().length() < 8)
-            throw new RuntimeException("password");
+        if (user.getPassword() == null || user.getPassword().length() < 8) {
+            throw new IllegalArgumentException("Password must be at least 8 characters");
+        }
 
-        return repo.save(user);
-    }
+        if (user.getRole() == null) {
+            user.setRole("USER");
+        }
 
-    public User getUser(Long id) {
-        return repo.findById(id)
-                .orElseThrow(() -> new RuntimeException("user not found"));
-    }
-
-    public List<User> getAllUsers() {
-        return repo.findAll();
-    }
-}
+        if (user.getCreatedAt() == null) {

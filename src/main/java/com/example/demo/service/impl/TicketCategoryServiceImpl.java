@@ -1,20 +1,40 @@
+package com.example.demo.service.impl;
+
+import com.example.demo.model.TicketCategory;
+import com.example.demo.repository.TicketCategoryRepository;
+import com.example.demo.exception.NotFoundException;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.time.LocalDateTime;
+
 @Service
-public class TicketCategoryServiceImpl implements TicketCategoryService {
+public class TicketCategoryServiceImpl {
 
-    private final TicketCategoryRepository repo;
+    private final TicketCategoryRepository categoryRepository;
 
-    public TicketCategoryServiceImpl(TicketCategoryRepository repo) {
-        this.repo = repo;
+    public TicketCategoryServiceImpl(TicketCategoryRepository categoryRepository) {
+        this.categoryRepository = categoryRepository;
     }
 
     public TicketCategory createCategory(TicketCategory category) {
-        if (repo.findByCategoryName(category.getCategoryName()).isPresent())
-            throw new RuntimeException("category exists");
-        return repo.save(category);
+        if (categoryRepository.existsByCategoryName(category.getCategoryName())) {
+            throw new IllegalArgumentException("Category already exists");
+        }
+
+        if (category.getCreatedAt() == null) {
+            category.setCreatedAt(LocalDateTime.now());
+        }
+
+        return categoryRepository.save(category);
     }
 
     public TicketCategory getCategory(Long id) {
-        return repo.findById(id)
-                .orElseThrow(() -> new RuntimeException("not found"));
+        return categoryRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Category not found"));
+    }
+
+    public List<TicketCategory> getAllCategories() {
+        return categoryRepository.findAll();
     }
 }
