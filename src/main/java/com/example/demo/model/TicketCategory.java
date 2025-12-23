@@ -1,20 +1,19 @@
 package com.example.demo.model;
 
-import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
-@Entity
 public class TicketCategory {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
     private String categoryName;
     private String description;
     private LocalDateTime createdAt = LocalDateTime.now();
 
     public TicketCategory() {}
+
+    public TicketCategory(String name, String desc) {
+        this.categoryName = name;
+        this.description = desc;
+    }
 
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
@@ -26,5 +25,4 @@ public class TicketCategory {
     public void setDescription(String description) { this.description = description; }
 
     public LocalDateTime getCreatedAt() { return createdAt; }
-    public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
 }
