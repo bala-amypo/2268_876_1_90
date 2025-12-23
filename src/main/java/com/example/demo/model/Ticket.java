@@ -11,10 +11,12 @@ public class Ticket {
 
     private Long userId;
     private Long categoryId;
-    private String title;
-    private String description;
 
-    // ✅ REQUIRED getters & setters
+    private String subject;     // ✅ REQUIRED
+    private String description;
+    private String status;
+
+    // -------- Getters & Setters --------
 
     public Long getId() {
         return id;
@@ -36,12 +38,12 @@ public class Ticket {
         this.categoryId = categoryId;
     }
 
-    public String getTitle() {
-        return title;
+    public String getSubject() {     // ✅ REQUIRED
+        return subject;
     }
 
-    public void setTitle(String title) {
-        this.title = title;
+    public void setSubject(String subject) {
+        this.subject = subject;
     }
 
     public String getDescription() {
@@ -50,5 +52,13 @@ public class Ticket {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 }
