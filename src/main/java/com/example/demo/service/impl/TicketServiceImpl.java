@@ -1,87 +1,20 @@
-package com.example.demo.service.impl;
-
-import com.example.demo.exception.NotFoundException;
-import com.example.demo.model.Ticket;
-import com.example.demo.model.TicketCategory;
-import com.example.demo.model.User;
-import com.example.demo.repository.TicketCategoryRepository;
-import com.example.demo.repository.TicketRepository;
-import com.example.demo.repository.UserRepository;
-import com.example.demo.service.TicketService;
-
-import org.springframework.stereotype.Service;
-
-import java.time.LocalDateTime;
-import java.util.List;
-
 @Service
-public class TicketServiceImpl implements TicketService {
+public class TicketCategoryServiceImpl implements TicketCategoryService {
 
-    private final TicketRepository ticketRepository;
-    private final UserRepository userRepository;
-    private final TicketCategoryRepository ticketCategoryRepository;
+    private final TicketCategoryRepository repo;
 
-    public TicketServiceImpl(
-            TicketRepository ticketRepository,
-            UserRepository userRepository,
-            TicketCategoryRepository ticketCategoryRepository) {
-
-        this.ticketRepository = ticketRepository;
-        this.userRepository = userRepository;
-        this.ticketCategoryRepository = ticketCategoryRepository;
+    public TicketCategoryServiceImpl(TicketCategoryRepository repo) {
+        this.repo = repo;
     }
 
-    @Override
-    public Ticket createTicket(Long userId, Long categoryId, Ticket ticket) {
-
-        User user = userRepository.findById(userId)
-                .orElseThrow(() ->
-                        new NotFoundException("User not found"));
-
-        TicketCategory category = ticketCategoryRepository
-                .findById(categoryId)
-                .orElseThrow(() ->
-                        new NotFoundException("Category not found"));
-
-        if (ticket.getSubject() == null
-                || ticket.getSubject().trim().isEmpty()) {
-            throw new IllegalArgumentException(
-                    "Subject must not be blank"
-            );
-        }
-
-        if (ticket.getDescription() == null
-                || ticket.getDescription().length() < 10) {
-            throw new IllegalArgumentException(
-                    "Description must be at least 10 characters"
-            );
-        }
-
-        ticket.setUser(user);
-        ticket.setCategory(category);
-
-        if (ticket.getStatus() == null) {
-            ticket.setStatus("OPEN");
-        }
-
-        ticket.setCreatedAt(LocalDateTime.now());
-        return ticketRepository.save(ticket);
+    public TicketCategory createCategory(TicketCategory category) {
+        if (repo.findByCategoryName(category.getCategoryName()).isPresent())
+            throw new RuntimeException("category exists");
+        return repo.save(category);
     }
 
-    @Override
-    public Ticket getTicket(Long ticketId) {
-        return ticketRepository.findById(ticketId)
-                .orElseThrow(() ->
-                        new NotFoundException("Ticket not found"));
-    }
-
-    @Override
-    public List<Ticket> getTicketsByUser(Long userId) {
-        return ticketRepository.findByUser_Id(userId);
-    }
-
-    @Override
-    public List<Ticket> getAllTickets() {
-        return ticketRepository.findAll();
+    public TicketCategory getCategory(Long id) {
+        return repo.findById(id)
+                .orElseThrow(() -> new RuntimeException("not found"));
     }
 }

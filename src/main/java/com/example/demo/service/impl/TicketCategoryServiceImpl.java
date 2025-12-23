@@ -1,46 +1,37 @@
-package com.example.demo.service.impl;
-
-import com.example.demo.exception.NotFoundException;
-import com.example.demo.model.TicketCategory;
-import com.example.demo.repository.TicketCategoryRepository;
-import com.example.demo.service.TicketCategoryService;
-
-import org.springframework.stereotype.Service;
-
-import java.time.LocalDateTime;
-import java.util.List;
-
 @Service
-public class TicketCategoryServiceImpl implements TicketCategoryService {
+public class TicketServiceImpl implements TicketService {
 
-    private final TicketCategoryRepository ticketCategoryRepository;
+    private final TicketRepository ticketRepo;
+    private final UserRepository userRepo;
+    private final TicketCategoryRepository categoryRepo;
 
-    public TicketCategoryServiceImpl(
-            TicketCategoryRepository ticketCategoryRepository) {
-        this.ticketCategoryRepository = ticketCategoryRepository;
+    public TicketServiceImpl(TicketRepository t, UserRepository u, TicketCategoryRepository c) {
+        this.ticketRepo = t;
+        this.userRepo = u;
+        this.categoryRepo = c;
     }
 
-    @Override
-    public TicketCategory createCategory(TicketCategory category) {
+    public Ticket createTicket(Long userId, Long categoryId, Ticket ticket) {
+        if (ticket.getDescription().length() < 10)
+            throw new RuntimeException("description");
 
-        if (ticketCategoryRepository
-                .existsByCategoryName(category.getCategoryName())) {
-            throw new IllegalArgumentException("Category already exists");
-        }
-
-        category.setCreatedAt(LocalDateTime.now());
-        return ticketCategoryRepository.save(category);
+        ticket.setUser(userRepo.findById(userId).orElseThrow());
+        ticket.setCategory(categoryRepo.findById(categoryId).orElseThrow());
+        return ticketRepo.save(ticket);
     }
 
-    @Override
-    public List<TicketCategory> getAllCategories() {
-        return ticketCategoryRepository.findAll();
+    public Ticket getTicket(Long id) {
+        return ticketRepo.findById(id)
+                .orElseThrow(() -> new RuntimeException("ticket not found"));
     }
 
-    @Override
-    public TicketCategory getCategory(Long id) {
-        return ticketCategoryRepository.findById(id)
-                .orElseThrow(() ->
-                        new NotFoundException("Category not found"));
+    public List<Ticket> getAllTickets() {
+        return ticketRepo.findAll();
+    }
+
+    public List<Ticket> getTicketsByUser(Long userId) {
+        return ticketRepo.findAll().stream()
+                .filter(t -> t.getUser().getId().equals(userId))
+                .toList();
     }
 }

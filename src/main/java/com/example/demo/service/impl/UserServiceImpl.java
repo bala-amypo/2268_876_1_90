@@ -1,55 +1,28 @@
-package com.example.demo.service.impl;
-
-import com.example.demo.exception.BadRequestException;
-import com.example.demo.exception.NotFoundException;
-import com.example.demo.model.User;
-import com.example.demo.repository.UserRepository;
-import com.example.demo.service.UserService;
-
-import org.springframework.stereotype.Service;
-
-import java.time.LocalDateTime;
-import java.util.List;
-
 @Service
 public class UserServiceImpl implements UserService {
 
-    private final UserRepository userRepository;
+    private final UserRepository repo;
 
-    public UserServiceImpl(UserRepository userRepository) {
-        this.userRepository = userRepository;
+    public UserServiceImpl(UserRepository repo) {
+        this.repo = repo;
     }
 
-    @Override
     public User registerUser(User user) {
+        if (repo.findByEmail(user.getEmail()).isPresent())
+            throw new RuntimeException("email exists");
 
-        if (userRepository.existsByEmail(user.getEmail())) {
-            throw new BadRequestException("Email already exists");
-        }
+        if (user.getPassword().length() < 8)
+            throw new RuntimeException("password");
 
-        if (user.getPassword() == null || user.getPassword().length() < 8) {
-            throw new BadRequestException(
-                    "Password must be at least 8 characters"
-            );
-        }
-
-        if (user.getRole() == null) {
-            user.setRole("USER");
-        }
-
-        user.setCreatedAt(LocalDateTime.now());
-        return userRepository.save(user);
+        return repo.save(user);
     }
 
-    @Override
     public User getUser(Long id) {
-        return userRepository.findById(id)
-                .orElseThrow(() ->
-                        new NotFoundException("User not found"));
+        return repo.findById(id)
+                .orElseThrow(() -> new RuntimeException("user not found"));
     }
 
-    @Override
     public List<User> getAllUsers() {
-        return userRepository.findAll();
+        return repo.findAll();
     }
 }
