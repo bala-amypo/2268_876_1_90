@@ -1,32 +1,28 @@
 package com.example.demo.util;
 
+import java.util.*;
+
 public class TextSimilarityUtil {
 
-    private TextSimilarityUtil() {
-    }
+    public static double similarity(String a, String b) {
+        if (a == null || b == null) return 0.0;
 
-    public static double similarity(String s1, String s2) {
+        a = a.toLowerCase().trim();
+        b = b.toLowerCase().trim();
 
-        if (s1 == null || s2 == null) return 0.0;
+        if (a.equals(b)) return 1.0;
+        if (a.isEmpty() || b.isEmpty()) return 0.0;
 
-        s1 = s1.toLowerCase();
-        s2 = s2.toLowerCase();
+        Set<String> s1 = new HashSet<>(Arrays.asList(a.split("\\s+")));
+        Set<String> s2 = new HashSet<>(Arrays.asList(b.split("\\s+")));
 
-        String[] words1 = s1.split("\\s+");
-        String[] words2 = s2.split("\\s+");
+        Set<String> intersection = new HashSet<>(s1);
+        intersection.retainAll(s2);
 
-        int common = 0;
-        for (String w1 : words1) {
-            for (String w2 : words2) {
-                if (w1.equals(w2)) {
-                    common++;
-                }
-            }
-        }
+        Set<String> union = new HashSet<>(s1);
+        union.addAll(s2);
 
-        int total = Math.max(words1.length, words2.length);
-        if (total == 0) return 0.0;
-
-        return (double) common / total;
+        return union.isEmpty() ? 0.0 :
+                (double) intersection.size() / union.size();
     }
 }
