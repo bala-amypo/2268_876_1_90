@@ -1,13 +1,14 @@
 package com.example.demo.repository;
 
 import com.example.demo.model.Ticket;
-import org.springframework.data.jpa.repository.JpaRepository;
+import java.util.*;
 
-import java.util.List;
-
-public interface TicketRepository extends JpaRepository<Ticket, Long> {
-
-    List<Ticket> findByUserId(Long userId);
-
-    List<Ticket> findByStatus(String status);   // ✅ REQUIRED
+public interface TicketRepository {
+    Optional<Ticket> findById(Long id);
+    List<Ticket> findAll();
+    List<Ticket> findByStatus(String status);
+    List<Ticket> findByCategory_Id(Long id);
+    List<Ticket> findByUser_Id(Long id);
+    List<Ticket> findBySubjectContainingIgnoreCaseOrDescriptionContainingIgnoreCase(String s1, String s2);
+    Ticket save(Ticket ticket);
 }

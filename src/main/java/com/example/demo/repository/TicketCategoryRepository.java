@@ -1,8 +1,10 @@
 package com.example.demo.repository;
 
 import com.example.demo.model.TicketCategory;
-import org.springframework.data.jpa.repository.JpaRepository;
+import java.util.*;
 
-public interface TicketCategoryRepository extends JpaRepository<TicketCategory, Long> {
-    boolean existsByCategoryName(String categoryName);
+public interface TicketCategoryRepository {
+    Optional<TicketCategory> findById(Long id);
+    boolean existsByCategoryName(String name);
+    TicketCategory save(TicketCategory category);
 }
