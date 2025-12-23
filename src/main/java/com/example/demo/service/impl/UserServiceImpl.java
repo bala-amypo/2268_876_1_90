@@ -2,48 +2,30 @@ package com.example.demo.service.impl;
 
 import com.example.demo.model.User;
 import com.example.demo.repository.UserRepository;
-import com.example.demo.exception.NotFoundException;
-import org.springframework.stereotype.Service;
+import com.example.demo.service.UserService;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
-@Service
-public class UserServiceImpl {
+public class UserServiceImpl implements UserService {
 
-    private final UserRepository userRepository;
+    private final UserRepository repo;
 
-    public UserServiceImpl(UserRepository userRepository) {
-        this.userRepository = userRepository;
+    public UserServiceImpl(UserRepository repo) {
+        this.repo = repo;
     }
 
     public User registerUser(User user) {
-        if (userRepository.existsByEmail(user.getEmail())) {
-            throw new IllegalArgumentException("Email already exists");
-        }
-
-        if (user.getPassword() == null || user.getPassword().length() < 8) {
-            throw new IllegalArgumentException("Password must be at least 8 characters");
-        }
-
-        if (user.getRole() == null) {
-            user.setRole("USER");
-        }
-
-        if (user.getCreatedAt() == null) {
-            user.setCreatedAt(LocalDateTime.now());
-        }
-
-        return userRepository.save(user);
+        if (repo.existsByEmail(user.getEmail()))
+            throw new RuntimeException("Email already exists");
+        return repo.save(user);
     }
 
     public User getUser(Long id) {
-        return userRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException("User not found"));
+        return repo.findById(id)
+                .orElseThrow(() -> new RuntimeException("User not found"));
     }
 
     public List<User> getAllUsers() {
-        return userRepository.findAll();
+        return repo.findAll();
     }
-
-} // <-- Make sure the class ends with this closing brace
+}

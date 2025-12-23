@@ -1,47 +1,42 @@
 package com.example.demo.service.impl;
 
-import com.example.demo.model.Ticket;
-import com.example.demo.model.User;
-import com.example.demo.repository.TicketRepository;
+import com.example.demo.model.*;
+import com.example.demo.repository.*;
 import com.example.demo.service.TicketService;
-import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-@Service
 public class TicketServiceImpl implements TicketService {
 
-    private final TicketRepository ticketRepository;
+    private final TicketRepository ticketRepo;
+    private final UserRepository userRepo;
+    private final TicketCategoryRepository categoryRepo;
 
-    public TicketServiceImpl(TicketRepository ticketRepository) {
-        this.ticketRepository = ticketRepository;
+    public TicketServiceImpl(TicketRepository t, UserRepository u, TicketCategoryRepository c) {
+        this.ticketRepo = t;
+        this.userRepo = u;
+        this.categoryRepo = c;
     }
 
-    @Override
     public Ticket createTicket(Long userId, Long categoryId, Ticket ticket) {
-        User user = new User();
-        user.setId(userId);
+        if (ticket.getDescription() == null || ticket.getDescription().length() < 10)
+            throw new RuntimeException("Description too short");
 
-        ticket.setUser(user);
-        ticket.setCategoryId(categoryId);
-        ticket.setStatus("OPEN");
-
-        return ticketRepository.save(ticket);
+        ticket.setUser(userRepo.findById(userId).orElseThrow());
+        ticket.setCategory(categoryRepo.findById(categoryId).orElseThrow());
+        return ticketRepo.save(ticket);
     }
 
-    @Override
-    public Ticket getTicket(Long ticketId) {
-        return ticketRepository.findById(ticketId)
+    public Ticket getTicket(Long id) {
+        return ticketRepo.findById(id)
                 .orElseThrow(() -> new RuntimeException("Ticket not found"));
     }
 
-    @Override
-    public List<Ticket> getTicketsByUser(Long userId) {
-        return ticketRepository.findByUserId(userId);
+    public List<Ticket> getAllTickets() {
+        return ticketRepo.findAll();
     }
 
-    @Override
-    public List<Ticket> getAllTickets() {
-        return ticketRepository.findAll();
+    public List<Ticket> getTicketsByUser(Long userId) {
+        return ticketRepo.findByUser_Id(userId);
     }
 }
