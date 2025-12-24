@@ -1,30 +1,53 @@
 package com.example.demo.model;
 
-import java.time.Instant;
+import jakarta.persistence.*;
+import java.time.LocalDateTime;
 
+@Entity
+@Table(name = "duplicate_detection_logs")
 public class DuplicateDetectionLog {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    
+    @ManyToOne
+    @JoinColumn(name = "ticket_id")
     private Ticket ticket;
-    private Ticket duplicateOf;
-    private double matchScore;
-    private Instant detectedAt = Instant.now();
+    
+    @ManyToOne
+    @JoinColumn(name = "matched_ticket_id")
+    private Ticket matchedTicket;
+    
+    private Double matchScore;
+    
+    private LocalDateTime detectedAt;
 
-    public DuplicateDetectionLog() {}
+    public DuplicateDetectionLog() {
+        this.detectedAt = LocalDateTime.now();
+    }
 
-    public DuplicateDetectionLog(Ticket ticket, Ticket duplicateOf, double matchScore) {
+    public DuplicateDetectionLog(Ticket ticket, Ticket matchedTicket, Double matchScore) {
         this.ticket = ticket;
-        this.duplicateOf = duplicateOf;
+        this.matchedTicket = matchedTicket;
         this.matchScore = matchScore;
+        this.detectedAt = LocalDateTime.now();
+    }
+
+    @PrePersist
+    protected void onCreate() {
+        if (detectedAt == null) {
+            detectedAt = LocalDateTime.now();
+        }
     }
 
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
     public Ticket getTicket() { return ticket; }
     public void setTicket(Ticket ticket) { this.ticket = ticket; }
-    public Ticket getDuplicateOf() { return duplicateOf; }
-    public void setDuplicateOf(Ticket duplicateOf) { this.duplicateOf = duplicateOf; }
-    public double getMatchScore() { return matchScore; }
-    public void setMatchScore(double matchScore) { this.matchScore = matchScore; }
-    public Instant getDetectedAt() { return detectedAt; }
-    public void setDetectedAt(Instant detectedAt) { this.detectedAt = detectedAt; }
+    public Ticket getMatchedTicket() { return matchedTicket; }
+    public void setMatchedTicket(Ticket matchedTicket) { this.matchedTicket = matchedTicket; }
+    public Double getMatchScore() { return matchScore; }
+    public void setMatchScore(Double matchScore) { this.matchScore = matchScore; }
+    public LocalDateTime getDetectedAt() { return detectedAt; }
+    public void setDetectedAt(LocalDateTime detectedAt) { this.detectedAt = detectedAt; }
 }
