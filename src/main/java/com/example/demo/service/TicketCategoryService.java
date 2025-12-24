@@ -1,4 +1,6 @@
 package com.example.demo.service;
+import com.example.demo.model.TicketCategory; // ✅ REQUIRED
+import java.util.List;                        // ✅ REQUIRED
 
 import com.example.demo.model.TicketCategory;
 

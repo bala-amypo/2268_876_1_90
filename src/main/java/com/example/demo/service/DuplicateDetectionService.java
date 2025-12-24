@@ -1,5 +1,5 @@
 package com.example.demo.service;
-
+import com.example.demo.model.DuplicateLog;
 import com.example.demo.model.DuplicateDetectionLog;
 import java.util.*;
 
