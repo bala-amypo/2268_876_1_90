@@ -1,10 +1,23 @@
-package com.example.demo.service;
-import com.example.demo.model.DuplicateLog;
-import com.example.demo.model.DuplicateDetectionLog;
-import java.util.*;
+// package com.example.demo.service;
+// import com.example.demo.model.DuplicateLog;
+// import com.example.demo.model.DuplicateDetectionLog;
+// import java.util.*;
 
-public interface DuplicateDetectionService {  
-    java.util.List<DuplicateDetectionLog> getLogsForTicket(Long ticketId);
-    java.util.List<DuplicateDetectionLog> detectDuplicates(Long ticketId);
-     DuplicateLog getLog(Long id);  
+// public interface DuplicateDetectionService {  
+//     java.util.List<DuplicateDetectionLog> getLogsForTicket(Long ticketId);
+//     java.util.List<DuplicateDetectionLog> detectDuplicates(Long ticketId);
+//      DuplicateLog getLog(Long id);  
+// }
+package com.example.demo.service;
+
+import com.example.demo.model.DuplicateDetectionLog;
+import java.util.List;
+
+public interface DuplicateDetectionService {
+
+    List<DuplicateDetectionLog> getLogsForTicket(Long ticketId);
+
+    List<DuplicateDetectionLog> detectDuplicates(Long ticketId);
+
+    DuplicateDetectionLog getLog(Long id);   // ✅ FIXED
 }
