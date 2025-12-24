@@ -1,11 +1,10 @@
 package com.example.demo.service;
-import com.example.demo.model.TicketCategory; // ✅ REQUIRED
-import java.util.List;                        // ✅ REQUIRED
 
 import com.example.demo.model.TicketCategory;
+import java.util.List;
 
 public interface TicketCategoryService {
-    TicketCategory createCategory(TicketCategory c);
+    TicketCategory createCategory(TicketCategory category);
     TicketCategory getCategory(Long id);
-     List<TicketCategory> getAllCategories(); 
+    List<TicketCategory> getAllCategories();
 }
