@@ -3,23 +3,21 @@ package com.example.demo.service.impl;
 import com.example.demo.model.DuplicateRule;
 import com.example.demo.repository.DuplicateRuleRepository;
 import com.example.demo.service.DuplicateRuleService;
+import org.springframework.stereotype.Service;
 
+import java.util.List;
+
+@Service
 public class DuplicateRuleServiceImpl implements DuplicateRuleService {
 
-    private final DuplicateRuleRepository repo;
+    private final DuplicateRuleRepository duplicateRuleRepository;
 
-    public DuplicateRuleServiceImpl(DuplicateRuleRepository repo) {
-        this.repo = repo;
+    public DuplicateRuleServiceImpl(DuplicateRuleRepository duplicateRuleRepository) {
+        this.duplicateRuleRepository = duplicateRuleRepository;
     }
 
-    public DuplicateRule createRule(DuplicateRule r) {
-        if (repo.findByRuleName(r.getRuleName()).isPresent())
-            throw new RuntimeException("Rule exists");
-        return repo.save(r);
-    }
-
-    public DuplicateRule getRule(Long id) {
-        return repo.findById(id)
-                .orElseThrow(() -> new RuntimeException("Rule not found"));
+    @Override
+    public List<DuplicateRule> getAllRules() {
+        return duplicateRuleRepository.findAll();
     }
 }
