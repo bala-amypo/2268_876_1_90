@@ -2,9 +2,9 @@ package com.example.demo.controller;
 
 import com.example.demo.model.TicketCategory;
 import com.example.demo.service.TicketCategoryService;
-
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
-
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -12,42 +12,31 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/categories")
-@Tag(
-        name = "Ticket Category Controller",
-        description = "Manage ticket categories"
-)
+@SecurityRequirement(name = "Bearer Authentication")
+@Tag(name = "Categories", description = "Ticket category management endpoints")
 public class TicketCategoryController {
-
-    private final TicketCategoryService ticketCategoryService;
-
-    public TicketCategoryController(
-            TicketCategoryService ticketCategoryService) {
-        this.ticketCategoryService = ticketCategoryService;
+    
+    private final TicketCategoryService categoryService;
+    
+    public TicketCategoryController(TicketCategoryService categoryService) {
+        this.categoryService = categoryService;
     }
-
-    @PostMapping("/")
-    public ResponseEntity<TicketCategory> createCategory(
-            @RequestBody TicketCategory category) {
-
-        return ResponseEntity.ok(
-                ticketCategoryService.createCategory(category)
-        );
+    
+    @PostMapping
+    @Operation(summary = "Create a new category")
+    public ResponseEntity<TicketCategory> createCategory(@RequestBody TicketCategory category) {
+        return ResponseEntity.ok(categoryService.createCategory(category));
     }
-
-    @GetMapping("/")
+    
+    @GetMapping
+    @Operation(summary = "Get all categories")
     public ResponseEntity<List<TicketCategory>> getAllCategories() {
-
-        return ResponseEntity.ok(
-                ticketCategoryService.getAllCategories()
-        );
+        return ResponseEntity.ok(categoryService.getAllCategories());
     }
-
+    
     @GetMapping("/{id}")
-    public ResponseEntity<TicketCategory> getCategory(
-            @PathVariable Long id) {
-
-        return ResponseEntity.ok(
-                ticketCategoryService.getCategory(id)
-        );
+    @Operation(summary = "Get category by ID")
+    public ResponseEntity<TicketCategory> getCategory(@PathVariable Long id) {
+        return ResponseEntity.ok(categoryService.getCategory(id));
     }
 }
