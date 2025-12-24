@@ -4,8 +4,8 @@ import com.example.demo.model.DuplicateRule;
 import java.util.*;
 
 public interface DuplicateRuleRepository {
-    Optional<DuplicateRule> findById(Long id);
     Optional<DuplicateRule> findByRuleName(String name);
+    DuplicateRule save(DuplicateRule r);
+    Optional<DuplicateRule> findById(Long id);
     List<DuplicateRule> findAll();
-    DuplicateRule save(DuplicateRule rule);
 }
