@@ -49,6 +49,7 @@ public class DuplicateDetectionController {
 
         return ResponseEntity.ok(
                 duplicateDetectionService.getLog(id)
+                
         );
     }
 }
