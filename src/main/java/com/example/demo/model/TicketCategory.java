@@ -1,18 +1,35 @@
 package com.example.demo.model;
 
-import java.time.Instant;
+import jakarta.persistence.*;
+import java.time.LocalDateTime;
 
+@Entity
+@Table(name = "ticket_categories")
 public class TicketCategory {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    
+    @Column(unique = true)
     private String categoryName;
+    
     private String description;
-    private Instant createdAt = Instant.now();
+    
+    private LocalDateTime createdAt;
 
     public TicketCategory() {}
 
     public TicketCategory(String categoryName, String description) {
         this.categoryName = categoryName;
         this.description = description;
+        this.createdAt = LocalDateTime.now();
+    }
+
+    @PrePersist
+    protected void onCreate() {
+        if (createdAt == null) {
+            createdAt = LocalDateTime.now();
+        }
     }
 
     public Long getId() { return id; }
@@ -21,6 +38,6 @@ public class TicketCategory {
     public void setCategoryName(String categoryName) { this.categoryName = categoryName; }
     public String getDescription() { return description; }
     public void setDescription(String description) { this.description = description; }
-    public Instant getCreatedAt() { return createdAt; }
-    public void setCreatedAt(Instant createdAt) { this.createdAt = createdAt; }
+    public LocalDateTime getCreatedAt() { return createdAt; }
+    public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
 }

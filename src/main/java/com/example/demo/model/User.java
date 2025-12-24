@@ -1,14 +1,25 @@
 package com.example.demo.model;
 
-import java.time.Instant;
+import jakarta.persistence.*;
+import java.time.LocalDateTime;
 
+@Entity
+@Table(name = "users")
 public class User {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    
     private String fullName;
+    
+    @Column(unique = true)
     private String email;
+    
     private String password;
+    
     private String role;
-    private Instant createdAt = Instant.now();
+    
+    private LocalDateTime createdAt;
 
     public User() {}
 
@@ -17,6 +28,14 @@ public class User {
         this.email = email;
         this.password = password;
         this.role = role == null ? "USER" : role;
+        this.createdAt = LocalDateTime.now();
+    }
+
+    @PrePersist
+    protected void onCreate() {
+        if (createdAt == null) {
+            createdAt = LocalDateTime.now();
+        }
     }
 
     public Long getId() { return id; }
@@ -29,6 +48,6 @@ public class User {
     public void setPassword(String password) { this.password = password; }
     public String getRole() { return role == null ? "USER" : role; }
     public void setRole(String role) { this.role = role; }
-    public Instant getCreatedAt() { return createdAt; }
-    public void setCreatedAt(Instant createdAt) { this.createdAt = createdAt; }
+    public LocalDateTime getCreatedAt() { return createdAt; }
+    public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
 }
