@@ -7,25 +7,29 @@ import com.example.demo.service.UserService;
 import java.util.List;
 
 public class UserServiceImpl implements UserService {
+    private final UserRepository userRepository;
 
-    private final UserRepository repo;
-
-    public UserServiceImpl(UserRepository repo) {
-        this.repo = repo;
+    public UserServiceImpl(UserRepository userRepository) {
+        this.userRepository = userRepository;
     }
 
-    public User registerUser(User user) {
-        if (repo.existsByEmail(user.getEmail()))
-            throw new RuntimeException("Email already exists");
-        return repo.save(user);
+    @Override
+    public User registerUser(User u) {
+        if (u == null) throw new IllegalArgumentException("user is null");
+        if (u.getEmail() == null || u.getEmail().isBlank()) throw new IllegalArgumentException("email required");
+        if (userRepository.existsByEmail(u.getEmail())) {
+            throw new IllegalArgumentException("email already exists");
+        }
+        return userRepository.save(u);
     }
 
+    @Override
     public User getUser(Long id) {
-        return repo.findById(id)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+        return userRepository.findById(id).orElseThrow(() -> new RuntimeException("user not found"));
     }
 
+    @Override
     public List<User> getAllUsers() {
-        return repo.findAll();
+        return userRepository.findAll();
     }
 }
