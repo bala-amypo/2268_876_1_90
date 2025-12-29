@@ -21,7 +21,7 @@ public class OpenApiConfig {
                         .title("Complaint Duplicate Detector")
                         .version("1.0")
                         .description("API for predicting when city trash bins will overflow"))
-                // Add this line to set the server and port
+               
                 .servers(List.of(new Server().url("https://9158.32procr.amypo.ai").description("Local Development Server")))
                 .addSecurityItem(new SecurityRequirement().addList("Bearer Authentication"))
                 .components(new Components()
