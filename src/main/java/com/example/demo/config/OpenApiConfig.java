@@ -18,7 +18,7 @@ public class OpenApiConfig {
     public OpenAPI customOpenAPI() {
         return new OpenAPI()
                 .info(new Info()
-                        .title("Bin Overflow Predictor API")
+                        .title("Complaint Duplicate Detector")
                         .version("1.0")
                         .description("API for predicting when city trash bins will overflow"))
                 // Add this line to set the server and port
