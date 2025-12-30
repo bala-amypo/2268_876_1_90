@@ -5,7 +5,6 @@ import java.util.*;
 public final class TextSimilarityUtil {
     private TextSimilarityUtil() {}
 
-    // Simple Jaccard similarity on case-insensitive tokens
     public static double similarity(String a, String b) {
         if (a == null || b == null) return 0.0;
         String as = a.trim();
